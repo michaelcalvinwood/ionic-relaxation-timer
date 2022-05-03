@@ -1,0 +1,7 @@
+{
+  "name": "ionic-relaxation-timer",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}

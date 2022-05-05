@@ -91,6 +91,7 @@ const App: React.FC = () => {
       } else {
         finish.play();
         clearInterval(intervalId);
+        setIsRunning(false);
       }
     }, 50000);
   };

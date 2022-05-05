@@ -1,0 +1,6 @@
+{
+	"appId": "io.ionic.starter",
+	"appName": "ionic-relaxation-timer",
+	"webDir": "build",
+	"bundledWebRuntime": false
+}

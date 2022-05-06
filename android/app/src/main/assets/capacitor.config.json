@@ -1,0 +1,6 @@
+{
+	"appId": "net.michaelcalvinwood.relaxationtimertest",
+	"appName": "Ionic Relaxation Timer",
+	"webDir": "build",
+	"bundledWebRuntime": false
+}

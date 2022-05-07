@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<resources>
-    <string name="app_name">Ionic Relaxation Timer</string>
-    <string name="title_activity_main">Ionic Relaxation Timer</string>
-    <string name="package_name">net.michaelcalvinwood.relaxationtimertest</string>
-    <string name="custom_url_scheme">net.michaelcalvinwood.relaxationtimertest</string>
-</resources>

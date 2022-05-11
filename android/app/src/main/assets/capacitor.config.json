@@ -1,0 +1,6 @@
+{
+	"appId": "net.michaelcalvinwood.ionicrelaxationtimer",
+	"appName": "ionic-relaxation-timer",
+	"webDir": "build",
+	"bundledWebRuntime": false
+}

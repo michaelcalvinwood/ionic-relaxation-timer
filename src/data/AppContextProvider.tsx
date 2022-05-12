@@ -10,6 +10,7 @@ const AppContextProvider: React.FC = props => {
   const [totalTime, setTotalTime] = useState<number>(300);
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
+  const [staticValue, setStaticValue] = useState<number>(() => 1);
     
     /* Set storage */
 
@@ -80,25 +81,61 @@ const AppContextProvider: React.FC = props => {
                 return ++curRounds;
             })
         }
+
+        const defaultPresets: Preset[] = [
+            {
+                id: '1',
+                name: 'Serenity Regardless',
+                reps: 6,
+                duration: 50
+            },
+            {
+                id: '2',
+                name: 'Yoga Nidra - 61 Points',
+                reps: 61,
+                duration: 5
+            },
+            {
+                id: '3',
+                name: 'Gayatri Mudra Sequence',
+                reps: 24,
+                duration: 60
+            },
+            {
+                id: '4',
+                name: 'RASCON - 12 Zones',
+                reps: 12,
+                duration: 30
+            },
+            {
+                id: '5',
+                name: 'RASCON - 6 Zones',
+                reps: 6,
+                duration: 30
+            }
+        ]
     
         /* initContext defines initial values when app is run */
     
-        // wrap initContext in useCallback with [] dependency so that this function is never regenerated when the Provider changes. I.e. make it static (created only once)
-        // this way we can use initContext as a useEffect dependency in the App component to ensure that it is run only once (as initiContext will never change)
-        const initContext = useCallback( async () => {
+        const initContext = async () => {
+            if (staticValue === 2) return;
+            setStaticValue(2);
+
             const presetsData = await Storage.get({key: 'presets'});
+            const currentPresets =  presetsData.value && presetsData.value.length ? JSON.parse(presetsData.value) : defaultPresets;
+            setPresets(currentPresets);
+
             const curPresetData = await Storage.get({key: 'curPreset'});
+            const selectedPresetId = curPresetData.value ? curPresetData.value : '1';
+            setCurPreset(selectedPresetId);
     
-            setPresets(presetsData.value ? JSON.parse(presetsData.value) : []);
-            setCurPreset(curPresetData.value ? curPresetData.value : '');
-    
-            if (curPresetData.value) {
-                // set rounds, totalTime, etc. here
-            }
-        }, []);
-    
-        // return the Provider with the value set to that which we want to share
-    
+            const selectedPreset: Preset | undefined = currentPresets.find((item: Preset) => item.id === selectedPresetId);
+
+            if (selectedPreset) setTotalTime(selectedPreset.reps * selectedPreset.duration);
+        };
+
+        initContext();
+
     return (
         <AppContext.Provider
             value = {{

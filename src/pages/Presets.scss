@@ -1,0 +1,20 @@
+.presets {
+
+    &__card {
+        margin: .25rem auto .5rem auto;
+    }
+    &__actions {
+        margin-top: .25rem;
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        font-size: 1.25rem;
+    }
+    &__action {
+        cursor: pointer;
+    }
+    &__instructions {
+        text-align: center;
+        font-style: italic;
+    }
+}

@@ -1,5 +1,6 @@
 import './Presets.scss';
-import React, { useContext } from "react";
+import React, { FunctionComponent, useContext, useState } from "react";
+import { RouteComponentProps, useHistory, withRouter } from 'react-router';
 import {
     IonContent,
     IonHeader,
@@ -16,12 +17,15 @@ import {
     IonCardHeader,
     IonCardTitle,
     IonCardSubtitle,
-    IonCardContent
+    IonCardContent,
+    IonToast
 } from "@ionic/react";
 
 import { add, trashOutline, createOutline } from 'ionicons/icons';
+import { Preset } from '../data/app-context';
 
 import AppContext from "../data/app-context";
+import EditPreset from './EditPreset';
 
 function convertHMS(sec: number) {
     let hours: string | number = Math.floor(sec / 3600); // get hours
@@ -35,13 +39,33 @@ function convertHMS(sec: number) {
     return minutes + ':' + seconds;
 }
 
+type Props = {component: FunctionComponent} & RouteComponentProps;
+
+
 const Presets: React.FC = () => {
+    const [errorMsg, setErrorMsg] = useState<string>('');
     const appCtx = useContext(AppContext);
+    const history = useHistory();
 
     const deletePreset = (e: React.MouseEvent<HTMLElement>, id: string) => {
         e.stopPropagation();
+        if (appCtx.presets.length === 1) {
+            setErrorMsg('You must keep at least one preset.')
+            return;
+        }
+        appCtx.deletePreset(id);
+    }
 
-        console.log('delete', id);
+    const editPreset = (e: React.MouseEvent<HTMLElement>, id: string) => {
+        e.stopPropagation();
+
+   
+        history.push('/edit-preset/' + id);
+    }
+
+    const selectPreset = (preset: Preset) => {
+        appCtx.setCurPreset(preset);
+        history.push('/timer');
     }
 
     return (
@@ -53,7 +77,7 @@ const Presets: React.FC = () => {
                     </IonTitle>
                     {isPlatform('ios') && (
                         <IonButtons slot="end">
-                            <IonButton routerLink="/add-preset" color="light">
+                            <IonButton routerLink="/add-preset" color="light" routerDirection='none'>
                                 <IonIcon slot="icon-only" icon={add} />
                             </IonButton>
                         </IonButtons>
@@ -66,7 +90,7 @@ const Presets: React.FC = () => {
                     .sort((a, b) => (a.reps * a.duration) - (b.reps * b.duration))
                     .map(preset => {
                     return (
-                        <IonCard className='presets__card' key={preset.id}>
+                        <IonCard className='presets__card' key={preset.id} onClick={()=>selectPreset(preset)}>
                             <IonCardHeader className="ion-text-center">
                                 <IonCardTitle>
                                     {preset.name}
@@ -80,7 +104,7 @@ const Presets: React.FC = () => {
                                 <p>{preset.duration} seconds each</p>
                                 <div className="presets__actions">
                                     <IonIcon className="presets__action" icon={trashOutline} color="warning" onClick={e => deletePreset(e, preset.id)}/>
-                                    <IonIcon className="presets__action" icon={createOutline} color="primary"/>
+                                    <IonIcon className="presets__action" icon={createOutline} color="primary" onClick={e => editPreset(e, preset.id)}/>
                                 </div>
                             </IonCardContent>
                         </IonCard>
@@ -88,14 +112,20 @@ const Presets: React.FC = () => {
                 })}
                 {!isPlatform('ios') && (
                     <IonFab horizontal="end" vertical="bottom" slot="fixed">
-                        <IonFabButton routerLink="/add-preset">
+                        <IonFabButton routerLink="/add-preset" routerDirection='none'>
                             <IonIcon icon={add} />
                         </IonFabButton>
                     </IonFab>
                 )}
             </IonContent>
+            <IonToast
+                color="secondary"
+                message={errorMsg}
+                isOpen={!!errorMsg}
+                duration={3000}
+                onDidDismiss={() => setErrorMsg('')} />
         </IonPage>
     )
 }
 
-export default Presets;
+export default withRouter(Presets);

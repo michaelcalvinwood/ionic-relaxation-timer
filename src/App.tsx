@@ -51,7 +51,7 @@ const App: React.FC = () => {
     <IonApp className="app">
       <IonReactRouter>
         <IonTabs>
-          <IonRouterOutlet>
+          <IonRouterOutlet animated={true}>
             <Route path="/timer">
               <Timer />
             </Route>
@@ -61,7 +61,7 @@ const App: React.FC = () => {
             <Route path="/add-preset">
               <AddPreset />
             </Route>
-            <Route path="/edit-preset">
+            <Route path="/edit-preset/:id">
               <EditPreset />
             </Route>
             <Redirect to="/timer" />

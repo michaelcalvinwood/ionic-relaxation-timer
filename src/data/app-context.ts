@@ -11,13 +11,14 @@ export interface Preset {
 const AppContext = React.createContext<{
     // what type of data are we going to share?
     presets: Preset[],
-    curPreset: string,
+    curPreset: Preset,
     rounds: number,
     totalTime: number,
     isRunning: boolean;
     isError: boolean;
-    setCurPreset: (id: string) => void;
+    setCurPreset: (preset: Preset) => void;
     addPreset: (name: string, reps: number, duration: number) => void;
+    deletePreset: (id: string) => void;
     editPreset: (id: string, name: string, reps: number, duration: number) => void;
     decrementRounds: () => void;
     incrementRounds: () => void;
@@ -27,13 +28,19 @@ const AppContext = React.createContext<{
 }>({
     // what is the default value of the data we are going to share?
     presets: [],
-    curPreset: '',
+    curPreset: {
+        id: '1',
+        name: 'Serenity Regardless',
+        reps: 6,
+        duration: 50
+    },
     rounds: 1,
     totalTime: 300,
     isRunning: false,
     isError: false,
     setCurPreset: () => {},
     addPreset: () => {},
+    deletePreset: () => {},
     editPreset: () => {},
     decrementRounds: () => {},
     incrementRounds: () => {},

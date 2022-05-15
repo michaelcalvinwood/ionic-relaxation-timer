@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   IonPage,
   IonApp,
@@ -10,12 +10,15 @@ import {
   IonToast,
   IonToolbar,
   setupIonicReact,
+  IonRange,
 } from "@ionic/react";
 
 import dingSound from "../assets/audio/ding.mp3";
 import finishSound from "../assets/audio/finished-001.mp3";
-import { addOutline, removeOutline } from 'ionicons/icons';
+import music from '../assets/audio/Solfeggio-528Hz.mp3';
+import { addOutline, removeOutline, musicalNotesOutline } from 'ionicons/icons';
 import AppContext from "../data/app-context";
+import { nextTick } from "process";
 
 function convertHMS(sec: number) {
   let hours: string | number = Math.floor(sec / 3600); // get hours
@@ -30,8 +33,11 @@ function convertHMS(sec: number) {
 }
 
 let intervalId: ReturnType<typeof setInterval>;
+let musicAudio: HTMLAudioElement;
 
 const Timer: React.FC = () => {
+  const [volume, setVolume] = useState<number>(0);
+  const [musicIsPlaying, setMusicIsPlaying] = useState<boolean>(false);
   const appCtx = useContext(AppContext);
 
   const stopTimer = () => {
@@ -61,6 +67,33 @@ const Timer: React.FC = () => {
       }
     }, appCtx.curPreset.duration * 1000);
   };
+  
+  useEffect (() => {
+    console.log('volume', volume);
+
+    if (volume === 0 && musicIsPlaying) {
+      musicAudio.pause();
+      musicAudio.currentTime = 0;
+      setMusicIsPlaying(false);
+      return;
+    }
+
+    if (volume === 0 && !musicIsPlaying) return;
+
+    if (volume > 0) {
+      if (!musicIsPlaying) {
+        setMusicIsPlaying(true);
+        musicAudio.loop = true;
+        musicAudio.play();
+      }
+      musicAudio.volume = volume / 100;
+    }
+  }, [volume])
+
+  useEffect(() => {
+    musicAudio = new Audio(music);
+    console.log('musicAudio', musicAudio);
+  }, [])
 
   return (
     <IonPage>
@@ -100,6 +133,16 @@ const Timer: React.FC = () => {
                 Stop
               </IonButton>
             </div>
+            <IonRange
+                className="app__music-volume"
+                value={volume}
+                onIonChange={e => setVolume(e.detail.value as number)}
+                min={0}
+                max={100}
+                step={1}>
+                  <IonIcon color="secondary" size="small" slot="start" icon={musicalNotesOutline} />
+                  <IonIcon color="secondary" slot="end" icon={musicalNotesOutline} />
+              </IonRange>
           </div>
         </div>
       </IonContent>

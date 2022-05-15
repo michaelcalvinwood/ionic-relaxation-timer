@@ -16,7 +16,7 @@
         background-color: rgba(255,255,255,.2);
         padding: 1rem;
         border-radius: 4px;
-        width: 10rem;
+        width: 12rem;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -39,4 +39,8 @@
       &__time {
           font-size: 3rem;
       }
+    &__music-volume {
+      width: 10rem;
+    }
+  
 }

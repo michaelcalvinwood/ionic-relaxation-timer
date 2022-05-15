@@ -44,6 +44,7 @@ type Props = {component: FunctionComponent} & RouteComponentProps;
 
 const Presets: React.FC = () => {
     const [errorMsg, setErrorMsg] = useState<string>('');
+   
     const appCtx = useContext(AppContext);
     const history = useHistory();
 

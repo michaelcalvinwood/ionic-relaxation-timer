@@ -18,7 +18,8 @@ import {
     IonCardTitle,
     IonCardSubtitle,
     IonCardContent,
-    IonToast
+    IonToast,
+    IonMenuButton
 } from "@ionic/react";
 
 import { add, trashOutline, createOutline } from 'ionicons/icons';
@@ -39,12 +40,12 @@ function convertHMS(sec: number) {
     return minutes + ':' + seconds;
 }
 
-type Props = {component: FunctionComponent} & RouteComponentProps;
+type Props = { component: FunctionComponent } & RouteComponentProps;
 
 
 const Presets: React.FC = () => {
     const [errorMsg, setErrorMsg] = useState<string>('');
-   
+
     const appCtx = useContext(AppContext);
     const history = useHistory();
 
@@ -60,7 +61,7 @@ const Presets: React.FC = () => {
     const editPreset = (e: React.MouseEvent<HTMLElement>, id: string) => {
         e.stopPropagation();
 
-   
+
         history.push('/edit-preset/' + id);
     }
 
@@ -73,6 +74,9 @@ const Presets: React.FC = () => {
         <IonPage>
             <IonHeader>
                 <IonToolbar>
+                    <IonButtons slot='start'>
+                        <IonMenuButton />
+                    </IonButtons>
                     <IonTitle>
                         Presets
                     </IonTitle>
@@ -85,39 +89,41 @@ const Presets: React.FC = () => {
                     )}
                 </IonToolbar>
             </IonHeader>
-            <IonContent className="presets__content">
-                <p className="presets__instructions">Tap to select</p>
-                {appCtx.presets
-                    .sort((a, b) => (a.reps * a.duration) - (b.reps * b.duration))
-                    .map(preset => {
-                    return (
-                        <IonCard className='presets__card' key={preset.id} onClick={()=>selectPreset(preset)}>
-                            <IonCardHeader className="ion-text-center">
-                                <IonCardTitle>
-                                    {preset.name}
-                                </IonCardTitle>
-                                <IonCardSubtitle>
-                                    {`${convertHMS(preset.reps * preset.duration)}`}
-                                </IonCardSubtitle>
-                            </IonCardHeader>
-                            <IonCardContent>
-                                <p>{preset.reps} reps</p>
-                                <p>{preset.duration} seconds each</p>
-                                <div className="presets__actions">
-                                    <IonIcon className="presets__action" icon={trashOutline} color="warning" onClick={e => deletePreset(e, preset.id)}/>
-                                    <IonIcon className="presets__action" icon={createOutline} color="primary" onClick={e => editPreset(e, preset.id)}/>
-                                </div>
-                            </IonCardContent>
-                        </IonCard>
-                    )
-                })}
-                {!isPlatform('ios') && (
-                    <IonFab horizontal="end" vertical="bottom" slot="fixed">
-                        <IonFabButton routerLink="/add-preset" routerDirection='none'>
-                            <IonIcon icon={add} />
-                        </IonFabButton>
-                    </IonFab>
-                )}
+            <IonContent>
+                <div className="presets__content">
+                    <p className="presets__instructions">Tap to select</p>
+                    {appCtx.presets
+                        .sort((a, b) => (a.reps * a.duration) - (b.reps * b.duration))
+                        .map(preset => {
+                            return (
+                                <IonCard className='presets__card' key={preset.id} onClick={() => selectPreset(preset)}>
+                                    <IonCardHeader className="ion-text-center">
+                                        <IonCardTitle>
+                                            {preset.name}
+                                        </IonCardTitle>
+                                        <IonCardSubtitle>
+                                            {`${convertHMS(preset.reps * preset.duration)}`}
+                                        </IonCardSubtitle>
+                                    </IonCardHeader>
+                                    <IonCardContent>
+                                        <p>{preset.reps} reps</p>
+                                        <p>{preset.duration} seconds each</p>
+                                        <div className="presets__actions">
+                                            <IonIcon className="presets__action" icon={trashOutline} color="warning" onClick={e => deletePreset(e, preset.id)} />
+                                            <IonIcon className="presets__action" icon={createOutline} color="primary" onClick={e => editPreset(e, preset.id)} />
+                                        </div>
+                                    </IonCardContent>
+                                </IonCard>
+                            )
+                        })}
+                    {!isPlatform('ios') && (
+                        <IonFab horizontal="end" vertical="bottom" slot="fixed">
+                            <IonFabButton routerLink="/add-preset" routerDirection='none'>
+                                <IonIcon icon={add} />
+                            </IonFabButton>
+                        </IonFab>
+                    )}
+                </div>
             </IonContent>
             <IonToast
                 color="secondary"

@@ -18,7 +18,6 @@ import {addOutline, removeOutline} from 'ionicons/icons';
 const Main: React.FC = () => {
     let intervalId: ReturnType<typeof setInterval>;
 
-
     const [reps, setReps] = useState(1);
     const [time, setTime] = useState(5);
     const [isRunning, setIsRunning] = useState(false);

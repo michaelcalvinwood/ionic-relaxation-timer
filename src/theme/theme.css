@@ -1,7 +1,7 @@
 :root {
     --ion-toolbar-background: var(--ion-color-primary);
     --ion-tab-bar-background: var(--ion-color-primary);
-    --ion-toobar-color: var(--ion-color-primary-contrast);
+    --ion-toolbar-color: var(--ion-color-primary-contrast);
     --ion-tab-bar-color: var(--ion-color-primary-contrast);
     --ion-tab-bar-color-selected: var(--ion-color-secondary);
   }
@@ -17,4 +17,25 @@
   ion-card {
     width: 96%;
     max-width: 600px;
+  }
+
+  ion-menu {
+    width: 4rem;
+    --ion-background-color: var(--ion-color-secondary);
+    --ion-text-color: var(--ion-color-secondary-contrast);
+  }
+
+  ion-menu ion-title {
+    --ion-background-color: var(--ion-color-primary);
+    --ion-text-color: var(--ion-color-primary-contrast);
+    margin: 0;
+    padding: 0;
+  }
+  
+  ion-menu ion-header ion-item {
+    padding: 0;
+  }
+
+  ion-menu ion-header ion-item ion-icon {
+    padding: 0;
   }

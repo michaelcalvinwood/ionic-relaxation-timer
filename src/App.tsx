@@ -8,7 +8,16 @@ import {
   IonTabButton, 
   IonTabs,
   IonIcon,
-  IonLabel
+  IonLabel,
+  IonMenu,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonList,
+  IonItem,
+  IonMenuToggle,
+  IonSplitPane
  } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { Redirect, Route } from "react-router-dom";
@@ -40,7 +49,8 @@ import "./theme/variables.css";
 import "./theme/theme.css";
 
 /* Import icons for tabs */
-import { hourglassOutline, settingsOutline } from 'ionicons/icons';
+import { hourglassOutline, settingsOutline, options, closeOutline } from 'ionicons/icons';
+import Settings from "./pages/Settings";
 
 setupIonicReact();
 
@@ -50,8 +60,37 @@ const App: React.FC = () => {
   return (
     <IonApp className="app">
       <IonReactRouter>
+        {/* the contentId prop tells ionic on which parts of the apps should the menu be added as an overlay */}
+      <IonMenuToggle>  
+        <IonMenu contentId="main">
+          <IonHeader>
+            <IonToolbar>
+              <IonTitle>
+              <IonItem>
+                  <IonIcon slot="start" icon={closeOutline} />
+                  <IonLabel></IonLabel>
+                </IonItem>
+              </IonTitle>
+            </IonToolbar>
+          </IonHeader>
+          <IonContent>
+            <IonList>
+              {/* the props button and routerLink tell ionic that you want the item to act as if it were a button */}
+              <IonMenuToggle>
+                <IonItem button routerLink="/settings" routerDirection="none">
+                  <IonIcon className="ion-special-background-secondary" slot="start" icon={options} />
+                  <IonLabel></IonLabel>
+                </IonItem>
+              </IonMenuToggle>
+            </IonList>
+          </IonContent>
+        </IonMenu>
+        </IonMenuToggle>
         <IonTabs>
-          <IonRouterOutlet animated={true}>
+          <IonRouterOutlet animated={true} id="main">
+            <Route path="/settings">
+              <Settings />
+            </Route>
             <Route path="/timer">
               <Timer />
             </Route>

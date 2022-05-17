@@ -37,11 +37,11 @@ function convertHMS(sec: number) {
 }
 
 let intervalId: ReturnType<typeof setInterval>;
-let musicAudio: HTMLAudioElement;
+// let musicAudio: HTMLAudioElement;
 let lastUpdate = Date.now();
 
 const Timer: React.FC = () => {
-  const [playMusic, setPlayMusic] = useState<boolean>(false);
+  // const [playMusic, setPlayMusic] = useState<boolean>(false);
   const appCtx = useContext(AppContext);
 
   const stopTimer = () => {
@@ -73,60 +73,69 @@ const Timer: React.FC = () => {
     }, appCtx.curPreset.duration * 1000);
   };
 
+  const toggleMusic = () => {
+      const curUpdate = Date.now();
+      const diff = curUpdate - lastUpdate;
 
-  const getCurSong = () => {
-    return appCtx.songs.find(song => song.id === appCtx.curMusic);
+      if (diff < 350) return;
+      lastUpdate = curUpdate;
+
+      appCtx.setPlayMusic(!appCtx.playMusic);
   }
 
-  useEffect(() => {
-    const curUpdate = Date.now();
-    const diff = curUpdate - lastUpdate;
+  // const getCurSong = () => {
+  //   return appCtx.songs.find(song => song.id === appCtx.curMusic);
+  // }
 
-    if (diff < 350) return;
-    lastUpdate = curUpdate;
+  // useEffect(() => {
+  //   const curUpdate = Date.now();
+  //   const diff = curUpdate - lastUpdate;
 
-    const curSong = getCurSong();
+  //   if (diff < 350) return;
+  //   lastUpdate = curUpdate;
 
-    if (!curSong) {
-      console.error('Cannot find matching song.id for: ' + appCtx.curMusic);
-      return;
-    }
+  //   const curSong = getCurSong();
 
-    musicAudio = curSong.audio;
+  //   if (!curSong) {
+  //     console.error('Cannot find matching song.id for: ' + appCtx.curMusic);
+  //     return;
+  //   }
 
-    if (playMusic) {
-      musicAudio.volume = 1;
-      musicAudio.currentTime = 0;
-      musicAudio.loop = true;
-      musicAudio.play();
-    } else {
-      musicAudio.pause();
-    }
-  }, [playMusic])
+  //   musicAudio = curSong.audio;
 
-  useEffect(() => {
-    const curSong = getCurSong();
-    if (!curSong) return;
+  //   if (playMusic) {
+  //     musicAudio.volume = 1;
+  //     musicAudio.currentTime = 0;
+  //     musicAudio.loop = true;
+  //     musicAudio.play();
+  //   } else {
+  //     musicAudio.pause();
+  //   }
+  // }, [playMusic])
 
-    if (curSong.audio === musicAudio) {
-      return;
-    }
+  // useEffect(() => {
+  //   const curSong = getCurSong();
+  //   if (!curSong) return;
 
-    if (!musicAudio) return;
+  //   if (curSong.audio === musicAudio) {
+  //     return;
+  //   }
 
-    musicAudio.pause();
-    musicAudio.currentTime = 0;
-    musicAudio = curSong.audio;
+  //   if (!musicAudio) return;
 
-    if (playMusic) {
-      musicAudio.volume = 1;
-      musicAudio.currentTime = 0;
-      musicAudio.loop = true;
-      musicAudio.play();
-    }
+  //   musicAudio.pause();
+  //   musicAudio.currentTime = 0;
+  //   musicAudio = curSong.audio;
+
+  //   if (playMusic) {
+  //     musicAudio.volume = 1;
+  //     musicAudio.currentTime = 0;
+  //     musicAudio.loop = true;
+  //     musicAudio.play();
+  //   }
     
 
-  }, [appCtx.curMusic])
+  // }, [appCtx.curMusic])
 
   return (
     <IonPage>
@@ -169,8 +178,8 @@ const Timer: React.FC = () => {
             <div className="app__item-toggle-container">
               <IonItem className="app__item-toggle">
                 <IonToggle
-                  checked={playMusic}
-                  onIonChange={() => {setPlayMusic(cur => !cur)}}
+                  checked={appCtx.playMusic}
+                  onIonChange={toggleMusic}
                   color="secondary" />
                 <IonLabel>
                   <IonIcon color="secondary" size="large" slot="end" icon={musicalNotesOutline} />

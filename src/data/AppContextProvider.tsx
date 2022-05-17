@@ -31,6 +31,9 @@ const AppContextProvider: React.FC = props => {
   const [isError, setIsError] = useState<boolean>(false);
   const [staticValue, setStaticValue] = useState<number>(() => 1);
 
+  const [playMusic, setPlayMusic] = useState<boolean>(false);
+  const [musicAudio, setMusicAudio] = useState<HTMLMediaElement | null>(null);
+
   /* Data */
 
   const defaultPresets: Preset[] = [
@@ -105,7 +108,9 @@ const defaultSongs: Song[] = [
     
   ]
   
-    
+  const getCurSong = () => {
+    return defaultSongs!.find(song => song.id === curMusic);
+  }
     /* Set storage */
 
     useEffect(() => {
@@ -128,14 +133,44 @@ const defaultSongs: Song[] = [
     }, [curPreset]);
 
     useEffect(() => {
-        console.log('AppContextProvider curMusic', curMusic);
         if (!curMusic) return;
+
+        if (musicAudio && playMusic) {
+            musicAudio.pause();
+            musicAudio.currentTime = 0;
+        }
+
+        const curSong = getCurSong();
+
+        if (curSong) setMusicAudio(curSong.audio);
 
         Storage.set({
             key: 'curMusic',
             value: curMusic
         })
     }, [curMusic]);
+
+    useEffect(() => {
+        if (!musicAudio) return;
+
+        musicAudio.volume = 1;
+        musicAudio.loop = true;
+        musicAudio.currentTime = 0;
+
+        if (playMusic){
+            musicAudio.play();
+        }
+    }, [musicAudio])
+
+    useEffect(() => {
+        if (!musicAudio) return;
+
+        if (playMusic) musicAudio?.play();
+        else {
+            musicAudio.pause();
+            musicAudio.currentTime = 0;
+        }
+    }, [playMusic])
 
     /* Set state dependencies */
 
@@ -221,8 +256,6 @@ const defaultSongs: Song[] = [
 
         if (selectedPreset) setTotalTime(selectedPreset.reps * selectedPreset.duration);
 
-        console.log('curMusicData', curMusicData);
-
         const selectedMusic = curMusicData.value && curMusicData.value.length ?
             curMusicData.value :
             "song-01";
@@ -243,6 +276,8 @@ const defaultSongs: Song[] = [
                 totalTime,
                 isRunning,
                 isError,
+                playMusic,
+                setPlayMusic,
                 setCurPreset,
                 setCurMusic,
                 addPreset,

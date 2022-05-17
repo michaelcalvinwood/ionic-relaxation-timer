@@ -26,6 +26,8 @@ const AppContext = React.createContext<{
     totalTime: number,
     isRunning: boolean;
     isError: boolean;
+    playMusic: boolean;
+    setPlayMusic: (state: boolean) => void;
     setCurPreset: (preset: Preset) => void;
     setCurMusic: (song: string) => void;
     addPreset: (name: string, reps: number, duration: number) => void;
@@ -36,6 +38,7 @@ const AppContext = React.createContext<{
     setIsRunning: (state: boolean) => void;
     setIsError: (state: boolean) => void;
     initContext: () => void;
+
 }>({
     // what is the default value of the data we are going to share?
     presets: [],
@@ -51,6 +54,8 @@ const AppContext = React.createContext<{
     totalTime: 300,
     isRunning: false,
     isError: false,
+    playMusic: false,
+    setPlayMusic: () => {},
     setCurPreset: () => {},
     setCurMusic: () => {},
     addPreset: () => {},

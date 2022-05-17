@@ -1,0 +1,14 @@
+.music-card {
+    margin: .5rem auto;
+    cursor: pointer;
+    
+    &--selected {
+        background-color: var(--ion-color-secondary);
+    }
+
+    &__image {
+        display: block;
+        margin: 1rem auto 0 auto;
+
+    }
+}

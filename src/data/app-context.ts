@@ -8,15 +8,26 @@ export interface Preset {
     duration: number;
 }
 
+export interface Song {
+    id: string;
+    pic: string;
+    name: string;
+    artist: string;
+    audio: HTMLMediaElement;
+}
+
 const AppContext = React.createContext<{
     // what type of data are we going to share?
     presets: Preset[],
     curPreset: Preset,
+    songs: Song[],
+    curMusic: string,
     rounds: number,
     totalTime: number,
     isRunning: boolean;
     isError: boolean;
     setCurPreset: (preset: Preset) => void;
+    setCurMusic: (song: string) => void;
     addPreset: (name: string, reps: number, duration: number) => void;
     deletePreset: (id: string) => void;
     editPreset: (id: string, name: string, reps: number, duration: number) => void;
@@ -34,11 +45,14 @@ const AppContext = React.createContext<{
         reps: 6,
         duration: 50
     },
+    songs: [],
+    curMusic: 'song-01',
     rounds: 1,
     totalTime: 300,
     isRunning: false,
     isError: false,
     setCurPreset: () => {},
+    setCurMusic: () => {},
     addPreset: () => {},
     deletePreset: () => {},
     editPreset: () => {},

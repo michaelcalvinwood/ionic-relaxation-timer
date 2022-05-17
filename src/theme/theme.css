@@ -39,3 +39,13 @@
   ion-menu ion-header ion-item ion-icon {
     padding: 0;
   }
+
+  ion-toggle {
+    color: var(--ion-color-primary);
+  }
+
+  ion-item {
+    --background: transparent;
+  }
+  
+  

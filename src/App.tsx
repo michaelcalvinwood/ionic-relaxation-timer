@@ -27,6 +27,7 @@ import Timer from "./pages/Timer";
 import Presets from "./pages/Presets";
 import EditPreset from "./pages/EditPreset";
 import AddPreset from "./pages/AddPreset";
+import MusicSettings from "./pages/MusicSettings";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -49,7 +50,7 @@ import "./theme/variables.css";
 import "./theme/theme.css";
 
 /* Import icons for tabs */
-import { hourglassOutline, settingsOutline, options, closeOutline } from 'ionicons/icons';
+import { hourglassOutline, optionsOutline, options, closeOutline, musicalNotes, musicalNoteOutline } from 'ionicons/icons';
 import Settings from "./pages/Settings";
 
 setupIonicReact();
@@ -60,9 +61,7 @@ const App: React.FC = () => {
   return (
     <IonApp className="app">
       <IonReactRouter>
-        {/* the contentId prop tells ionic on which parts of the apps should the menu be added as an overlay */}
-      <IonMenuToggle>  
-        <IonMenu contentId="main">
+        {/* <IonMenu contentId="main">
           <IonHeader>
             <IonToolbar>
               <IonTitle>
@@ -75,7 +74,6 @@ const App: React.FC = () => {
           </IonHeader>
           <IonContent>
             <IonList>
-              {/* the props button and routerLink tell ionic that you want the item to act as if it were a button */}
               <IonMenuToggle>
                 <IonItem button routerLink="/settings" routerDirection="none">
                   <IonIcon className="ion-special-background-secondary" slot="start" icon={options} />
@@ -84,12 +82,14 @@ const App: React.FC = () => {
               </IonMenuToggle>
             </IonList>
           </IonContent>
-        </IonMenu>
-        </IonMenuToggle>
+        </IonMenu> */}
         <IonTabs>
           <IonRouterOutlet animated={true} id="main">
-            <Route path="/settings">
+            {/* <Route path="/settings">
               <Settings />
+            </Route> */}
+            <Route path="/music">
+              <MusicSettings />
             </Route>
             <Route path="/timer">
               <Timer />
@@ -112,8 +112,12 @@ const App: React.FC = () => {
               <IonLabel>Timer</IonLabel>
             </IonTabButton>
             <IonTabButton href="/presets" tab="presets">
-              <IonIcon icon={settingsOutline} />
+              <IonIcon icon={optionsOutline} />
               <IonLabel>Presets</IonLabel>
+            </IonTabButton>
+            <IonTabButton href="/music" tab="music">
+              <IonIcon icon={musicalNoteOutline} />
+              <IonLabel>Music</IonLabel>
             </IonTabButton>
           </IonTabBar>
         </IonTabs>

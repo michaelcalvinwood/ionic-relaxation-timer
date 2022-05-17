@@ -11,11 +11,15 @@ import {
   IonToolbar,
   setupIonicReact,
   IonRange,
+  IonToggle,
+  IonItem,
+  IonLabel,
 } from "@ionic/react";
 
 import dingSound from "../assets/audio/ding.mp3";
 import finishSound from "../assets/audio/finished-001.mp3";
-import music from '../assets/audio/Solfeggio-528Hz.mp3';
+//import music from '../assets/audio/Solfeggio-528Hz.mp3';
+import music from '../assets/music/Somewhere-an-Angel.wav';
 import { addOutline, removeOutline, musicalNotesOutline } from 'ionicons/icons';
 import AppContext from "../data/app-context";
 import { nextTick } from "process";
@@ -34,10 +38,10 @@ function convertHMS(sec: number) {
 
 let intervalId: ReturnType<typeof setInterval>;
 let musicAudio: HTMLAudioElement;
+let lastUpdate = Date.now();
 
 const Timer: React.FC = () => {
-  const [volume, setVolume] = useState<number>(0);
-  const [musicIsPlaying, setMusicIsPlaying] = useState<boolean>(false);
+  const [playMusic, setPlayMusic] = useState<boolean>(false);
   const appCtx = useContext(AppContext);
 
   const stopTimer = () => {
@@ -52,6 +56,7 @@ const Timer: React.FC = () => {
     appCtx.setIsRunning(true);
     const next = new Audio(dingSound);
     const finish = new Audio(finishSound);
+    next.volume=.5;
     next.play();
 
     const total = appCtx.curPreset.reps * appCtx.rounds;
@@ -67,33 +72,61 @@ const Timer: React.FC = () => {
       }
     }, appCtx.curPreset.duration * 1000);
   };
-  
-  useEffect (() => {
-    console.log('volume', volume);
 
-    if (volume === 0 && musicIsPlaying) {
-      musicAudio.pause();
-      musicAudio.currentTime = 0;
-      setMusicIsPlaying(false);
+
+  const getCurSong = () => {
+    return appCtx.songs.find(song => song.id === appCtx.curMusic);
+  }
+
+  useEffect(() => {
+    const curUpdate = Date.now();
+    const diff = curUpdate - lastUpdate;
+
+    if (diff < 350) return;
+    lastUpdate = curUpdate;
+
+    const curSong = getCurSong();
+
+    if (!curSong) {
+      console.error('Cannot find matching song.id for: ' + appCtx.curMusic);
       return;
     }
 
-    if (volume === 0 && !musicIsPlaying) return;
+    musicAudio = curSong.audio;
 
-    if (volume > 0) {
-      if (!musicIsPlaying) {
-        setMusicIsPlaying(true);
-        musicAudio.loop = true;
-        musicAudio.play();
-      }
-      musicAudio.volume = volume / 100;
+    if (playMusic) {
+      musicAudio.volume = 1;
+      musicAudio.currentTime = 0;
+      musicAudio.loop = true;
+      musicAudio.play();
+    } else {
+      musicAudio.pause();
     }
-  }, [volume])
+  }, [playMusic])
 
   useEffect(() => {
-    musicAudio = new Audio(music);
-    console.log('musicAudio', musicAudio);
-  }, [])
+    const curSong = getCurSong();
+    if (!curSong) return;
+
+    if (curSong.audio === musicAudio) {
+      return;
+    }
+
+    if (!musicAudio) return;
+
+    musicAudio.pause();
+    musicAudio.currentTime = 0;
+    musicAudio = curSong.audio;
+
+    if (playMusic) {
+      musicAudio.volume = 1;
+      musicAudio.currentTime = 0;
+      musicAudio.loop = true;
+      musicAudio.play();
+    }
+    
+
+  }, [appCtx.curMusic])
 
   return (
     <IonPage>
@@ -133,16 +166,17 @@ const Timer: React.FC = () => {
                 Stop
               </IonButton>
             </div>
-            <IonRange
-                className="app__music-volume"
-                value={volume}
-                onIonChange={e => setVolume(e.detail.value as number)}
-                min={0}
-                max={100}
-                step={1}>
-                  <IonIcon color="secondary" size="small" slot="start" icon={musicalNotesOutline} />
-                  <IonIcon color="secondary" slot="end" icon={musicalNotesOutline} />
-              </IonRange>
+            <div className="app__item-toggle-container">
+              <IonItem className="app__item-toggle">
+                <IonToggle
+                  checked={playMusic}
+                  onIonChange={() => {setPlayMusic(cur => !cur)}}
+                  color="secondary" />
+                <IonLabel>
+                  <IonIcon color="secondary" size="large" slot="end" icon={musicalNotesOutline} />
+                </IonLabel>
+              </IonItem>
+            </div>
           </div>
         </div>
       </IonContent>

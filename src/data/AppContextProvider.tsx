@@ -1,16 +1,110 @@
 import React, { useState, useEffect, useCallback } from "react";
-import AppContext, { Preset } from "./app-context";
+import AppContext, { Preset, Song } from "./app-context";
 import { Storage } from '@capacitor/storage';
+
+import angelPic from '../assets/images/base64/angel';
+import cactusPic from "../assets/images/base64/cactus";
+import infinityPic from "../assets/images/base64/infinity";
+import moonPic from "../assets/images/base64/moon";
+import longMeditaitonPic from "../assets/images/base64/long-meditation";
+
+import angelSong from '../assets/music/Somewhere-an-Angel.wav';
+import longMeditationSong from '../assets/music/Long-Meditation.mp3';
+import moonSatelliteSong from '../assets/music/MoonSatellite_WithoutPiano.wav';
+import stringsOfInfinitySong from '../assets/music/Strings-of-the-Infinity.wav';
+import westCactusSong from '../assets/music/WestCactusDream.wav';
+
+const angelAudio = new Audio(angelSong);
+const longMeditationAudio = new Audio(longMeditationSong);
+const moonSatelliteAudio = new Audio(moonSatelliteSong);
+const stringsOfInfinityAudio = new Audio(stringsOfInfinitySong);
+const westCactusAudio = new Audio(westCactusSong);
 
 const AppContextProvider: React.FC = props => {
   // define what we want to share with the components
   const [presets, setPresets] = useState<Preset[]>([]);
   const [curPreset, setCurPreset] = useState<Preset | null>(null);
+  const [curMusic, setCurMusic] = useState<string>("")
   const [rounds, setRounds] = useState<number>(1);
   const [totalTime, setTotalTime] = useState<number>(300);
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
   const [staticValue, setStaticValue] = useState<number>(() => 1);
+
+  /* Data */
+
+  const defaultPresets: Preset[] = [
+    {
+        id: '1',
+        name: 'Serenity Regardless',
+        reps: 6,
+        duration: 50
+    },
+    {
+        id: '2',
+        name: 'Yoga Nidra - 61 Points',
+        reps: 61,
+        duration: 5
+    },
+    {
+        id: '3',
+        name: 'Gayatri Mudra Sequence',
+        reps: 24,
+        duration: 60
+    },
+    {
+        id: '4',
+        name: 'RASCON - 12 Zones',
+        reps: 12,
+        duration: 30
+    },
+    {
+        id: '5',
+        name: 'RASCON - 6 Zones',
+        reps: 6,
+        duration: 30
+    }
+]
+
+const defaultSongs: Song[] = [
+    {
+      id: 'song-01',
+      pic: moonPic,
+      name: "Moon Satellite",
+      artist: "Den Elbriggs",
+      audio: moonSatelliteAudio
+    },
+    {
+      id: 'song-02',
+      pic: angelPic,
+      name: "Somewhere an Angel",
+      artist: "IVLIOR",
+      audio: angelAudio
+    },
+    {
+      id: 'song-03',
+      pic: longMeditaitonPic,
+      name: "LongMeditation",
+      artist: "SoundRose",
+      audio: longMeditationAudio
+    },  
+    {
+      id: 'song-04',
+      pic: cactusPic,
+      name: "West Cactus Dream",
+      artist: "Christos Anestopoulos",
+      audio: westCactusAudio
+    },
+    {
+      id: 'song-05',
+      pic: infinityPic,
+      name: "Strings of Infinity",
+      artist: "Christos Anestopoulos",
+      audio: stringsOfInfinityAudio
+    },
+    
+  ]
+  
     
     /* Set storage */
 
@@ -32,6 +126,16 @@ const AppContextProvider: React.FC = props => {
         setRounds(1);
         setTotalTime(curPreset.reps * curPreset.duration);
     }, [curPreset]);
+
+    useEffect(() => {
+        console.log('AppContextProvider curMusic', curMusic);
+        if (!curMusic) return;
+
+        Storage.set({
+            key: 'curMusic',
+            value: curMusic
+        })
+    }, [curMusic]);
 
     /* Set state dependencies */
 
@@ -96,39 +200,6 @@ const AppContextProvider: React.FC = props => {
         })
     }
 
-    const defaultPresets: Preset[] = [
-        {
-            id: '1',
-            name: 'Serenity Regardless',
-            reps: 6,
-            duration: 50
-        },
-        {
-            id: '2',
-            name: 'Yoga Nidra - 61 Points',
-            reps: 61,
-            duration: 5
-        },
-        {
-            id: '3',
-            name: 'Gayatri Mudra Sequence',
-            reps: 24,
-            duration: 60
-        },
-        {
-            id: '4',
-            name: 'RASCON - 12 Zones',
-            reps: 12,
-            duration: 30
-        },
-        {
-            id: '5',
-            name: 'RASCON - 6 Zones',
-            reps: 6,
-            duration: 30
-        }
-    ]
-
     /* initContext defines initial values when app is run */
 
     const initContext = async () => {
@@ -138,6 +209,7 @@ const AppContextProvider: React.FC = props => {
         const presetsData = await Storage.get({key: 'presets'});
         const currentPresets =  presetsData.value && presetsData.value.length ? JSON.parse(presetsData.value) : defaultPresets;
         const curPresetData = await Storage.get({key: 'curPreset'});
+        const curMusicData = await Storage.get({key: 'curMusic'});
 
         setPresets(currentPresets);
 
@@ -148,6 +220,14 @@ const AppContextProvider: React.FC = props => {
         setCurPreset(selectedPreset);
 
         if (selectedPreset) setTotalTime(selectedPreset.reps * selectedPreset.duration);
+
+        console.log('curMusicData', curMusicData);
+
+        const selectedMusic = curMusicData.value && curMusicData.value.length ?
+            curMusicData.value :
+            "song-01";
+        
+        setCurMusic(selectedMusic);
     };
 
     initContext();
@@ -157,11 +237,14 @@ const AppContextProvider: React.FC = props => {
             value = {{
                 presets,
                 curPreset: curPreset ? curPreset : {id: '1', name: 'Serenity Regardless', reps: 6, duration: 50},
+                songs: defaultSongs,
+                curMusic: curMusic,
                 rounds,
                 totalTime,
                 isRunning,
                 isError,
                 setCurPreset,
+                setCurMusic,
                 addPreset,
                 deletePreset,
                 editPreset,

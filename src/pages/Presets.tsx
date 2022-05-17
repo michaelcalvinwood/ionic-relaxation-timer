@@ -74,9 +74,9 @@ const Presets: React.FC = () => {
         <IonPage>
             <IonHeader>
                 <IonToolbar>
-                    <IonButtons slot='start'>
+                    {/* <IonButtons slot='start'>
                         <IonMenuButton />
-                    </IonButtons>
+                    </IonButtons> */}
                     <IonTitle>
                         Presets
                     </IonTitle>

@@ -8,11 +8,11 @@ import infinityPic from "../assets/images/base64/infinity";
 import moonPic from "../assets/images/base64/moon";
 import longMeditaitonPic from "../assets/images/base64/long-meditation";
 
-import angelSong from '../assets/music/Somewhere-an-Angel.wav';
+import angelSong from '../assets/music/Somewhere-an-Angel.mp3';
 import longMeditationSong from '../assets/music/Long-Meditation.mp3';
-import moonSatelliteSong from '../assets/music/MoonSatellite_WithoutPiano.wav';
-import stringsOfInfinitySong from '../assets/music/Strings-of-the-Infinity.wav';
-import westCactusSong from '../assets/music/WestCactusDream.wav';
+import moonSatelliteSong from '../assets/music/MoonSatellite_WithoutPiano.mp3';
+import stringsOfInfinitySong from '../assets/music/Strings-of-the-Infinity.mp3';
+import westCactusSong from '../assets/music/WestCactusDream.mp3';
 
 const angelAudio = new Audio(angelSong);
 const longMeditationAudio = new Audio(longMeditationSong);

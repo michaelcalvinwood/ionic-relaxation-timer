@@ -41,7 +41,10 @@
   }
 
   ion-toggle {
-    color: var(--ion-color-primary);
+    /* color: var(--ion-color-primary); */
+    --handle-background: var(--ion-color-primary);
+   
+    width: 42px;
   }
 
   ion-item {

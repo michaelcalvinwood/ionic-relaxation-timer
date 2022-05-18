@@ -49,6 +49,7 @@ const Timer: React.FC = () => {
       clearInterval(intervalId);
       appCtx.setIsRunning(false);
     }
+    appCtx.setPlayMusic(false);
   }
 
   const startTimer = () => {
@@ -69,6 +70,7 @@ const Timer: React.FC = () => {
         finish.play();
         clearInterval(intervalId);
         appCtx.setIsRunning(false);
+        appCtx.setPlayMusic(false);
       }
     }, appCtx.curPreset.duration * 1000);
   };
@@ -83,59 +85,6 @@ const Timer: React.FC = () => {
       appCtx.setPlayMusic(!appCtx.playMusic);
   }
 
-  // const getCurSong = () => {
-  //   return appCtx.songs.find(song => song.id === appCtx.curMusic);
-  // }
-
-  // useEffect(() => {
-  //   const curUpdate = Date.now();
-  //   const diff = curUpdate - lastUpdate;
-
-  //   if (diff < 350) return;
-  //   lastUpdate = curUpdate;
-
-  //   const curSong = getCurSong();
-
-  //   if (!curSong) {
-  //     console.error('Cannot find matching song.id for: ' + appCtx.curMusic);
-  //     return;
-  //   }
-
-  //   musicAudio = curSong.audio;
-
-  //   if (playMusic) {
-  //     musicAudio.volume = 1;
-  //     musicAudio.currentTime = 0;
-  //     musicAudio.loop = true;
-  //     musicAudio.play();
-  //   } else {
-  //     musicAudio.pause();
-  //   }
-  // }, [playMusic])
-
-  // useEffect(() => {
-  //   const curSong = getCurSong();
-  //   if (!curSong) return;
-
-  //   if (curSong.audio === musicAudio) {
-  //     return;
-  //   }
-
-  //   if (!musicAudio) return;
-
-  //   musicAudio.pause();
-  //   musicAudio.currentTime = 0;
-  //   musicAudio = curSong.audio;
-
-  //   if (playMusic) {
-  //     musicAudio.volume = 1;
-  //     musicAudio.currentTime = 0;
-  //     musicAudio.loop = true;
-  //     musicAudio.play();
-  //   }
-    
-
-  // }, [appCtx.curMusic])
 
   return (
     <IonPage>
